@@ -1,0 +1,29 @@
+# Игнорировать виртуальное окружение
+venv/
+
+# Папки с результатами и данными
+result/
+dataset/
+img/
+data_yaml/
+annotations/
+tg_crop_cache/
+tg_img_cache/
+runs/
+# Кэш Python
+__pycache__/
+
+# Дополнительно: игнорировать временные файлы и байт-код Python
+*.py[cod]
+*$py.class
+
+# Скрытые системные файлы (опционально)
+.DS_Store
+Thumbs.db
+
+
+
+
+yolo11m.pt
+yolo11s.pt
+yolo11n.pt
