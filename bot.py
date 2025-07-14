@@ -15,7 +15,7 @@ from searcher import search
 
 logging.basicConfig(level=logging.INFO)
 
-TOKEN = '8085875866:AAGfoWcLZjKjatCWnU6KN5k6FYHTHIUIwFg'
+TOKEN = 'TOKEN'
 
 bot = Bot(token=TOKEN)
 model = YOLO(r'E:\projects\object_deleter\runs\detect\train3\weights\best.pt')
