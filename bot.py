@@ -18,7 +18,7 @@ logging.basicConfig(level=logging.INFO)
 TOKEN = '8085875866:AAGfoWcLZjKjatCWnU6KN5k6FYHTHIUIwFg'
 
 bot = Bot(token=TOKEN)
-model = YOLO(r'E:\projects\object_deleter\runs\detect\train3\weights\best.pt')
+model = YOLO(r'E:\projects\object_deleter\runs\detect\train2\weights\best.pt')
 
 application = ApplicationBuilder().token(TOKEN).build()
 
@@ -50,9 +50,13 @@ async def photo_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         with open(file_path, 'wb') as f:
             f.write(photo_bytes)
 
-        info = await asyncio.to_thread(search, file_path, model)
-        reply = info if info else "No objects detected on image."
+        info_filtered,info_not_filtered = await asyncio.to_thread(search, file_path, model)
+        reply = info_filtered if info_filtered else "No objects detected on image."  
+        await update.message.reply_text("The filtered info about animal.")
         await update.message.reply_text(reply)
+        reply_not_filtered= info_not_filtered if info_not_filtered else "No objects detected on image."  
+        await update.message.reply_text("maybe you will be interested about other things connected with this animal.")
+        await update.message.reply_text( reply_not_filtered)
     except Exception as e:
         logging.error(f"Error in photo_handler: {e}", exc_info=True)
         await update.message.reply_text("Error processing your photo.")

@@ -43,7 +43,7 @@ if __name__ == '__main__':
     if not os.path.exists(args.path_to_img):
         raise FileNotFoundError(f"path: {args.path_to_img} is incorrect")
 
-    model = YOLO(r'E:\projects\object_deleter\runs\detect\train3\weights\best.pt')
+    model = YOLO(r'E:\projects\object_deleter\runs\detect\train2\weights\best.pt')
 
     saved_files = model_predict( model,args.path_to_img)
   

@@ -6,10 +6,11 @@ import argparse
 import ctypes
 import shutil
 import datetime
+from sklearn.model_selection import train_test_split
+import random 
 
-
-TRAIN_RATIO = 0.7
-TEST_RATIO = 0.1
+TRAIN_RATIO = 0.75
+TEST_RATIO = 0.05
 VAL_RATIO = 0.2
 FILE_ATTRIBUTE_HIDDEN = 0x02
 CSV_FIELDNAMES = [
@@ -23,27 +24,27 @@ def create_hidden_folder(path):
         ret = ctypes.windll.kernel32.SetFileAttributesW(path, FILE_ATTRIBUTE_HIDDEN)
         if not ret:
             raise ctypes.WinError()
+        
+        
+def split_data(source_dir, train_dir, val_dir, test_dir, seed=42):
+    files = [os.path.join(source_dir, f) for f in os.listdir(source_dir) if os.path.isfile(os.path.join(source_dir, f))]
+    train_val_files, test_files = train_test_split(
+        files, test_size=TEST_RATIO, random_state=seed, shuffle=True)
 
-def split_data(source_dir, train_dir, val_dir, test_dir):
-    files = [f for f in os.listdir(source_dir) if os.path.isfile(os.path.join(source_dir, f))]
-    total = len(files)
-    train_end = int(total * TRAIN_RATIO)
-    val_end = train_end + int(total * VAL_RATIO)
-
-    train_files = files[:train_end]
-    val_files = files[train_end:val_end]
-    test_files = files[val_end:]
+    val_size_adjusted = VAL_RATIO / (TRAIN_RATIO + VAL_RATIO)
+    train_files, val_files = train_test_split(
+        train_val_files, test_size=val_size_adjusted, random_state=seed, shuffle=True)
 
     def copy(file_list, dist_dir):
         os.makedirs(dist_dir, exist_ok=True)
-        for file_name in file_list:
-            src_path = os.path.join(source_dir, file_name)
-            dst_path = os.path.join(dist_dir, file_name)
+        for src_path in file_list:
+            dst_path = os.path.join(dist_dir, os.path.basename(src_path))
             shutil.copy2(src_path, dst_path)
 
     copy(train_files, train_dir)
     copy(val_files, val_dir)
     copy(test_files, test_dir)
+
 
 def yolo_box_converter(img_width, img_height, x, y, w, h):
     x_center = (x + w / 2) / img_width
@@ -183,7 +184,7 @@ def data_prepare(img_path='', annotation='', skip_lines=0):
     os.makedirs(train_dir, exist_ok=True)
     os.makedirs(val_dir, exist_ok=True)
     os.makedirs(test_dir, exist_ok=True)
-
+    
     split_data(buffer_img_dir, os.path.join(train_dir, 'images'), os.path.join(val_dir, 'images'), os.path.join(test_dir, 'images'))
     split_data(buffer_label_dir, os.path.join(train_dir, 'labels'), os.path.join(val_dir, 'labels'), os.path.join(test_dir, 'labels'))
 
