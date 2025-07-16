@@ -2,12 +2,12 @@
 venv/
 
 # Папки с результатами и данными
-result/
+
 dataset/
 img/
 data_yaml/
 annotations/
-tg_crop_cache/
+
 tg_img_cache/
 runs/
 # Кэш Python

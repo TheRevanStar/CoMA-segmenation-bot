@@ -5,7 +5,7 @@ from clearml import Task
 import cv2
 import numpy as np
 from test import model_predict
-import ctypes
+
 from data_prepare import FILE_ATTRIBUTE_HIDDEN,create_hidden_folder
 import wikipedia
 import re
@@ -27,6 +27,10 @@ filter_list = [
     'avian',        
     'vertebrate',
     'invertebrate',
+    'fox',
+    'turtle',
+    'wolf',
+    'fur'
 ]
 
 
